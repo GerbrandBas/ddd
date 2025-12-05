@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>DDD-check: Vraagt dit vraagstuk om Delta Denken & Doen?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --ddd-blue: #00345f;       /* hoofdtint achtergrond */
+      --ddd-blue-strong: #001f3a;/* donkerder paneel */
+      --ddd-blue-soft: #0b4c80;  /* accent */
+      --ddd-accent: #f4a63b;     /* warme accentkleur */
+      --ddd-border: rgba(255, 255, 255, 0.16);
+      --ddd-text: #f7fbff;
+      --ddd-muted: #c9d7ea;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 2.5rem 1.5rem;
+      background: radial-gradient(circle at top left, #145a9c 0%, var(--ddd-blue) 35%, #021727 90%);
+      color: var(--ddd-text);
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .header-strip {
+      height: 5px;
+      width: 100%;
+      background: linear-gradient(90deg, #ffffff 0%, var(--ddd-accent) 30%, #6fb3ff 60%, transparent 100%);
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    .container {
+      background: linear-gradient(145deg, var(--ddd-blue-strong), #022643);
+      padding: 2rem 2.4rem;
+      border-radius: 20px;
+      border: 1px solid var(--ddd-border);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.9rem;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+    }
+
+    h1 span.sub {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--ddd-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+
+    p.lead {
+      margin-bottom: 1.5rem;
+      color: var(--ddd-muted);
+      max-width: 60rem;
+      line-height: 1.5;
+    }
+
+    .legend {
+      background: rgba(11, 76, 128, 0.5);
+      border-left: 5px solid var(--ddd-accent);
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #e8f1ff;
+    }
+
+    .legend strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #ffffff;
+    }
+
+    .score-card {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .score-box {
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.2) 90%);
+      border-radius: 14px;
+      border: 1px solid var(--ddd-border);
+      padding: 0.9rem 1.1rem;
+      font-size: 0.9rem;
+    }
+
+    .score-box strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .score-box span {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .score-box small {
+      display: block;
+      margin-top: 0.15rem;
+      font-size: 0.78rem;
+      color: var(--ddd-muted);
+    }
+
+    .section-title {
+      margin-top: 2rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--ddd-muted);
+      margin-top: 0.3rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .question {
+      margin: 1.25rem 0;
+      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(111, 179, 255, 0.17), rgba(0, 0, 0, 0.3));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .question p {
+      margin: 0 0 0.4rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .question small {
+      display: block;
+      margin-bottom: 0.8rem;
+      color: var(--ddd-muted);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .slider-row output {
+      min-width: 190px;
+      font-size: 0.85rem;
+      color: #ffffff;
+      text-align: right;
+      opacity: 0.9;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--ddd-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* 0–10 schuif in diapo-stijl */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(214, 225, 240, 0.4);
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--ddd-accent);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(244, 166, 59, 0.28);
+      border: 2px solid #001428;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--ddd-accent);
+      cursor: pointer;
+      border: 2px solid #001428;
+      box-shadow: 0 0 0 3px rgba(244, 166, 59, 0.28);
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(214, 225, 240, 0.4);
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      transition: transform 0.05s ease, box-shadow 0.1s ease, background 0.15s ease, border-color 0.15s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    #result {
+      margin-top: 2rem;
+      padding: 1.5rem 1.2rem;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    #result h2 {
+      margin-top: 0;
+      margin-bottom: 0.6rem;
+      color: #ffffff;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      margin-top: 0.25rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-strong {
+      background: #00c853;
+      color: #001f33;
+    }
+
+    .tag-medium {
+      background: #ffd95c;
+      color: #4a3400;
+    }
+
+    .tag-light {
+      background: #ff8a80;
+      color: #2b0704;
+    }
+
+    .warning {
+      color: #ffb3b3;
+      font-weight: 500;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 1.5rem 1rem;
+      }
+      .container {
+        padding: 1.5rem 1.3rem;
+      }
+      .slider-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .slider-row output {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header-strip"></div>
+
+    <div class="container">
+      <h1>
+        <span class="sub">Delta Denken &amp; Doen</span>
+        DDD-check: vraagt dit vraagstuk om een Delta-aanpak?
+      </h1>
+      <p class="lead">
+        Stel met een 10-punts schaal scherp hoe “Delta” jouw vraagstuk is.
+        De score per stap én de totaalscore worden automatisch bijgewerkt. Gebruik het resultaat als startpunt
+        voor een gesprek; het is een richtingaanwijzer, geen vonnis.
+      </p>
+
+      <div class="legend">
+        <strong>Score per vraag (10-punts schaal)</strong>
+        0–3 = Nee &nbsp;&nbsp;·&nbsp;&nbsp;
+        4–7 = Twijfel / deels &nbsp;&nbsp;·&nbsp;&nbsp;
+        8–10 = Ja
+      </div>
+
+      <div class="score-card">
+        <div class="score-box">
+          <strong>Totaalscore</strong>
+          <span id="total-score">75</span> / 150
+          <small>Alle 15 vragen samen</small>
+        </div>
+        <div class="score-box">
+          <strong>Stap 1 – Diagnose</strong>
+          <span id="step1-score">25</span> / 50
+          <small>Complexiteit &amp; urgentie van het vraagstuk</small>
+        </div>
+        <div class="score-box">
+          <strong>Stap 2 – Context</strong>
+          <span id="step2-score">25</span> / 50
+          <small>Hoe VUCA / VOLCANIC is de omgeving?</small>
+        </div>
+        <div class="score-box">
+          <strong>Stap 3 – Mindset</strong>
+          <span id="step3-score">25</span> / 50
+          <small>Ruimte voor DDD-houding &amp; experiment</small>
+        </div>
+      </div>
+
+      <form id="ddd-form">
+        <!-- Stap 1 -->
+        <div class="section-title">Stap 1 – Snelle DDD-diagnose</div>
+        <div class="section-subtitle">
+          Hoe complex, onzeker en multidisciplinair is dit vraagstuk?
+        </div>
+
+        <div class="question">
+          <p>1. Onzekerheid &amp; complexiteit</p>
+          <small>Is er veel onzekerheid over zowel de oorzaken als de gewenste uitkomst van het vraagstuk?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q1" name="q1" />
+            <output id="q1-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Helemaal niet</span>
+            <span>5 – Gedeeltelijk / gemengd</span>
+            <span>10 – Zeer sterk</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>2. Onvoldoende met klassieke aanpak</p>
+          <small>Is de verwachting dat een traditionele project- of programma-aanpak waarschijnlijk tekortschiet of al is vastgelopen?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q2" name="q2" />
+            <output id="q2-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Nee, klassieke aanpak volstaat</span>
+            <span>5 – Nog onduidelijk</span>
+            <span>10 – Ja, klassieke aanpak werkt hier niet</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>3. Meerdere disciplines &amp; partijen</p>
+          <small>Zijn er meerdere organisaties, disciplines of domeinen nodig om tot zinvolle inzichten of oplossingen te komen?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q3" name="q3" />
+            <output id="q3-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Nauwelijks</span>
+            <span>5 – Enkele</span>
+            <span>10 – Zeer veel / onmisbaar</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>4. Continu bijsturen</p>
+          <small>Verwacht je dat besluiten en strategie regelmatig moeten worden aangepast, omdat de situatie zich al doende ontwikkelt?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q4" name="q4" />
+            <output id="q4-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Nauwelijks</span>
+            <span>5 – Af en toe</span>
+            <span>10 – Doorlopend bijsturen nodig</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>5. Handelen zonder volledig plan</p>
+          <small>Speelt tijd een kritische rol en moet er worden gehandeld zonder dat er eerst een volledig uitgewerkt plan ligt?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q5" name="q5" />
+            <output id="q5-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Genoeg tijd voor volledig plan</span>
+            <span>5 – Gedeeltelijke tijdsdruk</span>
+            <span>10 – Hoge urgentie, direct handelen</span>
+          </div>
+        </div>
+
+        <!-- Stap 2 -->
+        <div class="section-title">Stap 2 – Context: past de omgeving bij DDD?</div>
+        <div class="section-subtitle">
+          Hoe VUCA / VOLCANIC is de omgeving van dit vraagstuk?
+        </div>
+
+        <div class="question">
+          <p>6. Ongeordende omgeving</p>
+          <small>Voelt de omgeving eerder onvoorspelbaar en ongeordend dan stabiel en goed te plannen?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q6" name="q6" />
+            <output id="q6-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Overwegend stabiel</span>
+            <span>5 – Fluctuerend</span>
+            <span>10 – Sterk turbulent / ongeordend</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>7. Dynamiek over tijd</p>
+          <small>Verandert de situatie voortdurend (nieuwe stakeholders, regels, technologie)?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q7" name="q7" />
+            <output id="q7-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Nauwelijks veranderingen</span>
+            <span>5 – Regelmatige veranderingen</span>
+            <span>10 – Voortdurende, ingrijpende veranderingen</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>8. Gekoppelde problemen (“kluwen”)</p>
+          <small>Heb je het gevoel dat je nooit één probleem oplost, maar steeds een kluwen van gekoppelde vraagstukken?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q8" name="q8" />
+            <output id="q8-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Afgebakend, één issue</span>
+            <span>5 – Enkele koppelingen</span>
+            <span>10 – Complexe, verweven kluwen</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>9. Behoefte aan experimenten</p>
+          <small>Is er meer behoefte aan kleinschalige experimenten en leren dan aan één groot masterplan?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q9" name="q9" />
+            <output id="q9-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Liever één groot plan</span>
+            <span>5 – Beide zijn denkbaar</span>
+            <span>10 – Experimenten zijn essentieel</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>10. Collectief i.p.v. alleen top-down</p>
+          <small>Voelt het logisch om de situatie aan te pakken via co-creatie met betrokkenen in plaats van primair top-down?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q10" name="q10" />
+            <output id="q10-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Voornamelijk top-down</span>
+            <span>5 – Hybride</span>
+            <span>10 – Sterke voorkeur co-creatie</span>
+          </div>
+        </div>
+
+        <!-- Stap 3 -->
+        <div class="section-title">Stap 3 – Mindset &amp; verandercapaciteit (DDD-fitness)</div>
+        <div class="section-subtitle">
+          Hoeveel ruimte is er voor DDD-houding, experiment en gezamenlijke ontdekking?
+        </div>
+
+        <div class="question">
+          <p>11. Ruimte voor twijfel &amp; verbeelding</p>
+          <small>Is er bestuurlijk en cultureel ruimte om twijfel, niet-weten en verbeeldingskracht serieus te nemen?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q11" name="q11" />
+            <output id="q11-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Nauwelijks ruimte</span>
+            <span>5 – Afhankelijk van personen/moment</span>
+            <span>10 – Volop ruimte en waardering</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>12. Tolerantie voor iteratief gedoe</p>
+          <small>Kunnen betrokken organisaties leven met een iteratieve aanpak zonder dit direct als falen te zien?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q12" name="q12" />
+            <output id="q12-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Lage tolerantie</span>
+            <span>5 – Beperkte ruimte</span>
+            <span>10 – Hoge tolerantie voor iteratie</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>13. Collectief eigenaarschap</p>
+          <small>Is men bereid eigenaarschap te delen in een DDD-team, in plaats van alles via formele hiërarchie te organiseren?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q13" name="q13" />
+            <output id="q13-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Sterk hiërarchisch</span>
+            <span>5 – Gemengd</span>
+            <span>10 – Collectief eigenaarschap is norm</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>14. Investeren in gezamenlijk ontdekken</p>
+          <small>Is er tijd, budget en aandacht om gezamenlijk te onderzoeken, experimenteren en reflecteren, ook als de uitkomst nog niet vaststaat?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q14" name="q14" />
+            <output id="q14-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Nauwelijks middelen</span>
+            <span>5 – Beperkte middelen</span>
+            <span>10 – Expliciet voor vrijgemaakt</span>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>15. Missie boven projectresultaat</p>
+          <small>Is er een gedeelde missie (“waarom doen we dit?”) die belangrijker is dan het afvinken van een vooraf gedefinieerd projectresultaat?</small>
+          <div class="slider-row">
+            <input type="range" min="0" max="10" step="1" value="5" id="q15" name="q15" />
+            <output id="q15-value">5 / 10 – Twijfel / deels</output>
+          </div>
+          <div class="scale-labels">
+            <span>0 – Resultaatlijst staat centraal</span>
+            <span>5 – Missie en resultaten in balans</span>
+            <span>10 – Missie is leidend</span>
+          </div>
+        </div>
+
+        <button type="button" id="calcBtn">Geef advies op basis van huidige score</button>
+      </form>
+
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    function describeValue(val) {
+      const v = parseInt(val, 10);
+      if (v <= 3) return v + " / 10 – Nee";
+      if (v <= 7) return v + " / 10 – Twijfel / deels";
+      return v + " / 10 – Ja";
+    }
+
+    function updateLabel(qNum) {
+      const slider = document.getElementById("q" + qNum);
+      const output = document.getElementById("q" + qNum + "-value");
+      if (!slider || !output) return;
+      output.textContent = describeValue(slider.value);
+    }
+
+    function updateTotals() {
+      let total = 0;
+      let step1 = 0;
+      let step2 = 0;
+      let step3 = 0;
+
+      for (let i = 1; i <= 15; i++) {
+        const slider = document.getElementById("q" + i);
+        if (!slider) continue;
+        const val = parseInt(slider.value, 10) || 0;
+        total += val;
+        if (i <= 5) step1 += val;
+        else if (i <= 10) step2 += val;
+        else step3 += val;
+      }
+
+      document.getElementById("total-score").textContent = total;
+      document.getElementById("step1-score").textContent = step1;
+      document.getElementById("step2-score").textContent = step2;
+      document.getElementById("step3-score").textContent = step3;
+
+      return total;
+    }
+
+    function initSliders() {
+      for (let i = 1; i <= 15; i++) {
+        const slider = document.getElementById("q" + i);
+        if (!slider) continue;
+        slider.addEventListener("input", function () {
+          updateLabel(i);
+          updateTotals();
+        });
+        updateLabel(i);
+      }
+      updateTotals();
+    }
+
+    function calculateAdvice() {
+      const total = updateTotals();
+      const resultDiv = document.getElementById("result");
+
+      let title;
+      let text;
+      let tagClass;
+      let tagLabel;
+
+      // Max = 150. Thresholds ongeveer gelijk aan 0–30 schaal:
+      // 0–79: klassiek; 80–119: hybride; 120–150: DDD.
+      if (total >= 120) {
+        title = "Dit is duidelijk een Delta-vraagstuk.";
+        text =
+          "Een Delta Denken &amp; Doen-aanpak is sterk aanbevolen. Start met een DDD-verkenning: klein beginnen, een sterk multidisciplinair DDD-team vormen en iteratief experimenteren en leren. Gebruik de scores per stap om te bepalen waar het gesprek moet beginnen (vraagstuk, context of mindset).";
+        tagClass = "tag-strong";
+        tagLabel = "DDD aanbevolen";
+      } else if (total >= 80) {
+        title = "Grijs gebied: waarschijnlijk een hybride aanpak.";
+        text =
+          "Combineer een lichte klassieke projectstructuur (voor planning en verantwoording) met een DDD-kernteam dat de complexe, politieke en interdisciplinaire delen in DDD-modus oppakt. Kijk vooral naar de stap met de hoogste score: daar ligt het meest ‘Delta’ potentieel.";
+        tagClass = "tag-medium";
+        tagLabel = "Hybride aanpak";
+      } else {
+        title = "Waarschijnlijk geen primair Delta-vraagstuk.";
+        text =
+          "Een klassieke project- of programma-aanpak ligt meer voor de hand. Delta Denken &amp; Doen kan wel helpen als reflectiekader of tijdelijke interventie bij blokkades. Gebruik de lagere scores om te zien waar juist helderheid en structuur de meeste waarde hebben.";
+        tagClass = "tag-light";
+        tagLabel = "Klassieke aanpak";
+      }
+
+      resultDiv.innerHTML =
+        "<h2>Resultaat &amp; advies</h2>" +
+        "<p><strong>Totaalscore:</strong> " +
+        total +
+        " van 150</p>" +
+        '<span class="tag ' +
+        tagClass +
+        '">' +
+        tagLabel +
+        "</span>" +
+        "<p><strong>Advies:</strong> " +
+        title +
+        "</p>" +
+        "<p>" +
+        text +
+        "</p>";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      initSliders();
+      document.getElementById("calcBtn").addEventListener("click", calculateAdvice);
+    });
+  </script>
+</body>
+</html>
